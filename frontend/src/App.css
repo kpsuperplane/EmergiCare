@@ -15,6 +15,18 @@
   height:100%;
   float:left;
 } 
+#pane-scroll{
+  height:100%;
+  overflow:auto;
+  margin-top:-47.3px;
+  padding-top:47.3px;
+  box-sizing:border-box;
+}
+#pane-info .tabs{
+  position:relative;
+  z-index:10;
+  background:#FFF;
+}
 .tabs a{
   transition:all 150ms;
   display:inline-block;
