@@ -29,6 +29,7 @@ class Main extends Component{
     render(){
         const {props, state, changeTab, toggle, hover} = this;
         const instance = this;
+        window.that = this;
         return (
             <div id="app">
                 <div id="pane-info">

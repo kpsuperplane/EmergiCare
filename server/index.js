@@ -10,6 +10,7 @@ var firebaseHelpers = require('./lib/firebaseHelpers.js');
 var helpers = require('./lib/helpers.js');
 var request = require('request');
 var io = require('./lib/io.js').listen(http);
+var path = require('path');
 
 var FIREBASE_CONFIG = require("./config/firebase_config.js");
 firebase.initializeApp(FIREBASE_CONFIG);
@@ -21,10 +22,9 @@ app.set('port', port);
 
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use('/', express.static(__dirname + '/public/'));
+app.use('/', express.static(__dirname + '/../frontend/build/'));
 
 app.post('/sms/receive', function (req, resp) {
-  console.log('sms message =', req.body);
   var rawData = req.body.Body.split(";");
   var latitude = Number(rawData[0]);
   var longitude = Number(rawData[1]);
@@ -39,8 +39,6 @@ app.post('/sms/receive', function (req, resp) {
   var userRef = firebase.database().ref("/" + req.body.From);
   firebaseHelpers.query(userRef).then(function (res) {
     var dist = helpers.getDist(latitude, longitude, res.latitude, res.longitude);
-    console.log(dist);
-    console.log(dist < 1);
     if (dist < 1 && res.address != "") {
       console.log("cached");
       jsonData.address = res.address;
@@ -50,7 +48,6 @@ app.post('/sms/receive', function (req, resp) {
         resp.status(200);
       });
     } else { 
-      console.log("recalling api");
       request('https://maps.googleapis.com/maps/api/geocode/json?latlng=' + latitude + ',' + longitude + '&key=' + FIREBASE_CONFIG.googleMapsKey, function (error, response, body) {
         if (!error && response.statusCode == 200) {
           var ret = JSON.parse(body);
