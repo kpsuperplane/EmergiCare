@@ -2,5 +2,8 @@
   <script src="/socket.io/socket.io.js"></script>
   <script>
     var socket = io('http://localhost:8080');
+    socket.on('location:update', function (data) {
+      console.log(data.message);
+    });
   </script>
 </html>
