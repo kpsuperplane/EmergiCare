@@ -1,6 +1,7 @@
 function saveToFirebase (ref, json) {
   return new Promise(function (resolve){
     ref.update(json);  
+    resolve();
   });
 };
 
