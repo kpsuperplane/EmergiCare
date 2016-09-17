@@ -31,7 +31,7 @@ app.post('/sms/receive', function (req, resp) {
     if (rawData[0] == "name:set") {
       var settingsRef = firebase.database().ref("/settings/" + req.body.From);
       var name = rawData.slice(1).join(" ");
-      firebaseHelpers.save(settingsRef, {
+      firebaseHelpers.update(settingsRef, {
         name: name
       }).then(function () {
         resp.send("<Response><Message>Name succesfully set to: " + name + "!</Message></Response>");
@@ -41,7 +41,7 @@ app.post('/sms/receive', function (req, resp) {
       var number = rawData[1];
       var data = {};
       data[number] = true;
-      firebaseHelpers.save(settingsRef, data).then(function () {
+      firebaseHelpers.update(settingsRef, data).then(function () {
         resp.send("<Response><Message>Added: " + number + " to alert list!</Message></Response>");
       });
     } else if (rawData[0] == 'number:remove') {
@@ -78,7 +78,7 @@ app.post('/sms/receive', function (req, resp) {
       if (dist < 1 && res.address != "") {
         console.log("cached");
         jsonData.address = res.address;
-        firebaseHelpers.save(callsRef, jsonData).then(function () {
+        firebaseHelpers.update(callsRef, jsonData).then(function () {
           resp.status(200);
           resp.send();
         });
@@ -95,7 +95,7 @@ app.post('/sms/receive', function (req, resp) {
             jsonData.address = "";
           }
 
-          firebaseHelpers.save(callsRef, jsonData).then(function() {
+          firebaseHelpers.update(callsRef, jsonData).then(function() {
             resp.status(200);
             resp.send();
           });
@@ -114,12 +114,21 @@ app.post('/sms/receive', function (req, resp) {
 setInterval(function () {
   console.log("in updating services");
   var servicesRef = firebase.database().ref("/services/");
-  helpers.getVehicles().then(function (res) {
-    firebaseHelpers.save(servicesRef, res).then(function () {
-      console.log("Updated services");
+  helpers.getVehicles().then(function (newServices) {
+    firebaseHelpers.query(servicesRef).then(function (oldServices) {
+      for (var key in newServices) {
+        if (newServices.hasOwnProperty(key)) {
+          if (oldServices[key] != null && oldServices[key].handler != null) {
+            newServices[key].handler = oldServices[key].handler;
+          }
+        }
+      }
+      firebaseHelpers.set(servicesRef, newServices).then(function () {
+        console.log("Set services");
+      });
     });
   });
-}, 40000);
+}, 35000);
 
 http.listen(app.get('port'), function () {
   console.log("Node app is running port", app.get('port')); 

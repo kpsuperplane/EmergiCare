@@ -33,15 +33,15 @@ function getVehicles () {
   return new Promise(function (resolve) {
     request(requestSettings, function (error, response, body) {
       if (!error && response.statusCode == 200) {
-        var obj = messages.FeedMessage.decode(body);
+        var obj = messages.FeedMessage.decode(body);  
         var vehiclesObj = {};
         for (var i = 0; i < obj.entity.length; i++) {
-          vehiclesObj[obj.entity[i].vehicle.vehicle.id] = {
-            latitude: obj.entity[i].vehicle.position.latitude,
-            longitude: obj.entity[i].vehicle.position.longitude,
-            congestion_level: obj.entity[i].vehicle.congestion_level,
-            occupancy_status: obj.entity[i].vehicle.occupancy_status
-          };
+            vehiclesObj[obj.entity[i].vehicle.vehicle.id] = {
+              latitude: obj.entity[i].vehicle.position.latitude,
+              longitude: obj.entity[i].vehicle.position.longitude,
+              congestion_level: obj.entity[i].vehicle.congestion_level,
+              occupancy_status: obj.entity[i].vehicle.occupancy_status
+            };
         }
         resolve(vehiclesObj);
       } else {

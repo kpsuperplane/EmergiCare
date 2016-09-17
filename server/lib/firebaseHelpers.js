@@ -1,8 +1,13 @@
-function saveToFirebase (ref, json) {
+function updateToFirebase (ref, json) {
   return new Promise(function (resolve) {
-    ref.update(json);  
-    resolve();
+    ref.update(json).then(resolve);
   });
+};
+
+function setToFirebase (ref, json) {
+  return new Promise(function (resolve) {
+    ref.set(json).then(resolve);
+  })
 };
 
 function queryFromFirebase (ref) {
@@ -22,7 +27,8 @@ function removeFromFirebase (ref) {
 };
 
 module.exports = {
-  save: saveToFirebase,
+  update: updateToFirebase,
+  set: setToFirebase,
   query: queryFromFirebase,
   remove: removeFromFirebase
 }
