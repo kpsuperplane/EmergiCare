@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "emergicare-17207",
+  "private_key_id": "5c74cf04d72f5eba2d9311bd5ee79f98a290149a",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQDDOhwIPsq7bsxf\nDyqFlQXBXqhaakGnlhSYyECSPWNNbWF09Tjdzk5sBZJQHY1rhtCG6o0rLdovwLeX\nI4lWyLaxsfDjI1wuNbW0HcZc4tcFpcuD7sJDep33qjFk4gE3Avn9gNwX8dt0OhJ5\nY0MWpZX2QAU3BhoC1TP+sj+LIbCuC3uKFKBuTgtFGEyUToEFMsqZFQd+LesWPYXK\nFxZr8RHTRiJxM7LwAc/aayeqtsxX9K/Izc1pcevvfdQnCJ4ggL8tzLeN4r1H0l6L\n2EFOgiDJLYRUezZTtln7varbYgkZ+rnZzp1XU6Eyj9E/4zvzXgc9uvqBwIgGG76d\n1/LzZwDtAgMBAAECggEBAIfvcU9ocX9bIeDazY/f+Pbw8yapr/eB7+uGHDf3mKp0\nDBUFHsiK+14J7xvrx+nkIFShAxTaw37WoL8TVnDgJx3JueJeX7QpX9D/nnxU0sWy\n8Od3mzqjKVUm42fMWm40m18hl57woA7o1K5DKJafS7EAWOE8VWY9kAu7j7VQCxbT\n3ewNYc4tlj9/i4mdQ9AYwDMQ1uZfzEA8M/Sxq4veRk5LRgE/axu5uxDrChmB1LSb\nWULtNFVhi7JmRcIE/pNGm5hS9Q7sk5uYEgBjHDLU3zdlWLMYqZKj4lhJWpBSAoFb\n/DpYCAgSzexT5hqut54MUv82L+yILxcGI8QsCAhwuaECgYEA73bX7VTVoLEMX0UX\nybWC6pbcn6IInKJOMsepNiDp7smnwghkR9TnF5+TQw0CauwuL++5ESjcP6ZiISl4\nNRrgojMy1Svq4de+oSZnethiVsFw0GYzbhiGB55mUs+SznJE+76xJZmT107+Ip6R\nNBOuRTgt2xuJA0ZKXs5wv1E/UykCgYEA0LVB0RN4msuqQGL8AVmGFD0TCbCQQ0LC\nyRx76TRNiRRv4pMilwI8e01IYOhXEZJfKKaMoVrSvLTPBWqM7FD6RCdcKUVgTms8\nzS+OW+UIciBCwh8c+tqa2BJh5Drim2FXXNl7iKBr0BwS4KDsUfotXABTzJYergD+\nRxXTh3dbnCUCgYEA1wFS0LIZ+WTeIfAscpx5xl3cC6x1pQWJxshEYuhcgl0nNe1I\n9MHxF+HcXBijMhOLSNkpxoF0d+XRN8s/NhdC1/+2RXZgN5T5gUG1KbR9Xz3iKAuL\nY++6775GS1Y6jwhEbfCCp6rj9i7juXu8DhEZqObPLWrksz76aXNcAjtV6zkCgYEA\njSqMogYxhUJMndBV8/PBpN7KibtLWLNHXRBPH6Wo7BdOtkofE1UH476aPjHo8pG2\nm6BLbrgn4kvJ2zf+qbj8Di0xQRkT0vbl4UNRXwbDd64qeXLh/yrtoUiNvfm2XLKy\njLLtw7P+OH1Ep3sxXSGCnL/77l170uYJF7vDn9UzuaECgYBy8xL7kdJU19ztTTi1\nK4u5h3QHjI+PwnBfBNg4ccUwZSaExVkmVgX33Tr5QbWuaARdpiemMG8nWPpeO3OJ\nQty5VJP5gV7fKubDwrAxIeBW1D+J1Lfn+5oRtuiyzIUL33lfLNY58f3VlORP3uE7\nO1M5eMcmxAG2fDhSpwd8Iu13+g==\n-----END PRIVATE KEY-----\n",
+  "client_email": "emergicare-17207@appspot.gserviceaccount.com",
+  "client_id": "111854893750349184108",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://accounts.google.com/o/oauth2/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/emergicare-17207%40appspot.gserviceaccount.com"
+}

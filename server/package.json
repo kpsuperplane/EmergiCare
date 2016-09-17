@@ -1,0 +1,24 @@
+{
+  "name": "emergicare",
+  "version": "1.0.0",
+  "description": "Fast, accurate location tracking during emergencies. Hack the North 2016",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "author": "Jeffrey Xiao, Diana Chang, Kevin Pei, Alex Foley",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "firebase": "^3.4.0",
+    "http": "0.0.0",
+    "immutable": "^3.8.1",
+    "morgan": "^1.7.0",
+    "node-sass-middleware": "^0.9.8",
+    "request": "^2.74.0",
+    "socket.io": "^1.4.8",
+    "twilio": "^2.9.3"
+  }
+}
