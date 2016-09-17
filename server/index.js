@@ -29,14 +29,12 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/', express.static(__dirname + '/../frontend/build/'));
 
 app.get('/gtfs', function (req, res) {
-  console.log("in gtfs get");
   var requestSettings = {
     method: 'GET',
     url: 'http://192.237.29.212:8080/gtfsrealtime/VehiclePositions',
     encoding: null
   }
   request(requestSettings, function (error, response, body) {
-    console.log("ENTERED HERE");
     if (!error && response.statusCode == 200) {
       //console.log(body);
       var obj = messages.FeedMessage.decode(body);
@@ -51,10 +49,9 @@ app.get('/gtfs', function (req, res) {
         };
       }
       console.log(vehiclesObj);
-      //console.log(obj);
-      res.send("done");
+      res.send("Successfully retrieved GRT GTFS data!");
     } else {
-      res.send("done");
+      res.send("Retrieving GRT GTFS data failed!");
     }
   });
 });
