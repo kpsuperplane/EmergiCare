@@ -7,11 +7,15 @@ var sassMiddleware = require('node-sass-middleware');
 var twilio = require('twilio');
 var firebase = require('firebase');
 var firebaseHelpers = require('./lib/firebaseHelpers.js');
+var twilioHelpers = require('./lib/twilioHelpers.js');
 var helpers = require('./lib/helpers.js');
 var request = require('request');
 var path = require('path');
 
 var FIREBASE_CONFIG = require("./config/firebase_config.js");
+var TWILIO_CONFIG = require("./config/twilio_config.js");
+
+var client = new twilio.RestClient(TWILIO_CONFIG.account_sid, TWILIO_CONFIG.auth_token);
 
 firebase.initializeApp(FIREBASE_CONFIG);
 
@@ -23,6 +27,29 @@ app.set('port', port);
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/', express.static(__dirname + '/../frontend/build/'));
+
+app.post('/call/resolve', function (req, res) {
+  var phoneNumber = req.body.phoneNumber;
+  var ref = firebase.database().ref('/settings/' + phoneNumber);
+  firebaseHelpers.query(ref).then(function (callerSettings) {
+    if (callerSettings.alerts == null) {
+      res.status(200);
+      res.send();
+    } else {
+      var promises = [];
+      for (var key in callerSettings.alerts) {
+        if (callerSettings.alerts.hasOwnProperty(key)) {
+          var body = "911 issue initiated by " + (callerSettings.name || phoneNumber) + " has been resolved!";
+          promises.push(twilioHelpers.sendSms(key, TWILIO_CONFIG.number, body));
+        }
+      }
+      Promise.all(promises).then(function (values) {
+        res.status(200);
+        res.send();
+      });
+    }
+  });
+});
 
 app.post('/sms/receive', function (req, resp) {
   console.log("receieved text");
@@ -52,6 +79,7 @@ app.post('/sms/receive', function (req, resp) {
       });
     }
   } else {
+    console.log("location update");
     rawData = req.body.Body.split(";");
 
     var latitude = Number(rawData[0]);

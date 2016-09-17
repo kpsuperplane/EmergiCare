@@ -31,4 +31,4 @@ module.exports = {
   set: setToFirebase,
   query: queryFromFirebase,
   remove: removeFromFirebase
-}
+};
