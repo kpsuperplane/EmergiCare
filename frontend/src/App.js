@@ -31,6 +31,8 @@ firedux.watch('/');
 
 firedux.init();
 
+window.firedux = firedux;
+
 class App extends Component {
   render() {
     return (

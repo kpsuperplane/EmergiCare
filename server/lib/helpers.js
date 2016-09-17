@@ -40,8 +40,7 @@ function getVehicles () {
             latitude: obj.entity[i].vehicle.position.latitude,
             longitude: obj.entity[i].vehicle.position.longitude,
             congestion_level: obj.entity[i].vehicle.congestion_level,
-            occupancy_status: obj.entity[i].vehicle.occupancy_status,
-            handler: ""
+            occupancy_status: obj.entity[i].vehicle.occupancy_status
           };
         }
         resolve(vehiclesObj);
