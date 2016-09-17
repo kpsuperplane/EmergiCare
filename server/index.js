@@ -9,7 +9,6 @@ var firebase = require('firebase');
 var firebaseHelpers = require('./lib/firebaseHelpers.js');
 var helpers = require('./lib/helpers.js');
 var request = require('request');
-var io = require('./lib/io.js').listen(http);
 var protobuf = require('protocol-buffers');
 var fs = require('fs');
 
@@ -80,8 +79,6 @@ app.post('/sms/receive', function (req, resp) {
       console.log("cached");
       jsonData.address = res.address;
       firebaseHelpers.save(userRef, jsonData).then(function() {
-        console.log("socket updating", jsonData);
-        io.emit('locations:update', jsonData);
         resp.status(200);
       });
     } else { 
@@ -98,8 +95,6 @@ app.post('/sms/receive', function (req, resp) {
         }
         
         firebaseHelpers.save(userRef, jsonData).then(function() {
-          console.log("socket updating", jsonData);
-          io.emit('locations:update', jsonData);
           resp.status(200);
         });
       })
