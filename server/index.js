@@ -123,8 +123,7 @@ app.post('/sms/receive', function (req, resp) {
       latitude: latitude,
       longitude: longitude,
       accuracy: Number(rawData[2]),
-      address: "",
-      urgency: 0
+      address: ""
     };
 
     var callsRef = firebase.database().ref("/calls/" + req.body.From);
