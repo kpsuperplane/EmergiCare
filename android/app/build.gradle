@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.bitgriff.androidcalls"
-        minSdkVersion 8
+        minSdkVersion 9
         targetSdkVersion 15
     }
 
@@ -20,4 +20,5 @@ android {
 
 dependencies {
     compile 'com.android.support:support-v4:18.0.0'
+    compile 'com.google.android.gms:play-services:6.5.87'
 }

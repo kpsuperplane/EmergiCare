@@ -5,17 +5,26 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="8"
+        android:minSdkVersion="9"
         android:targetSdkVersion="15" />
 
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:name="com.android.tools.fd.runtime.BootstrapApplication"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
         <activity
             android:name="com.bitgriff.androidcalls.MainActivity"
             android:label="@string/title_activity_main" >
@@ -28,6 +37,16 @@
 
         <service
             android:name="com.bitgriff.androidcalls.CallDetectService"
+            android:enabled="true"
+            android:exported="false" >
+        </service>
+        <service
+            android:name="com.bitgriff.androidcalls.EnhancedLocationService"
+            android:enabled="true"
+            android:exported="false" >
+        </service>
+        <service
+            android:name="com.bitgriff.androidcalls.Loc"
             android:enabled="true"
             android:exported="false" >
         </service>

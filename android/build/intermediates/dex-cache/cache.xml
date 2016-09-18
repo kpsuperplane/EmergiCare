@@ -1,26 +1,3 @@
 <?xml version="1.0" encoding="utf-8"?>
-<items version="2" >
+<items version="2" />
 
-    <item
-        jar="C:\Users\Hesperide\Desktop\HtN\AndroidCalls1\app\build\intermediates\incremental-classes\debug\instant-run-bootstrap.jar"
-        jumboMode="true"
-        revision="24.0.2"
-        sha1="f41326d0b925e9be305fac0b318ececdff30b7fd">
-        <dex dex="C:\Users\Hesperide\Desktop\HtN\AndroidCalls1\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run-bootstrap_7847ee07c490e285686f3dd935fac3e66d8d12f6\classes.dex" />
-    </item>
-    <item
-        jar="C:\Users\Hesperide\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-v4\18.0.0\support-v4-18.0.0.jar"
-        jumboMode="true"
-        revision="24.0.2"
-        sha1="44ec51e9d395a47aab135e5e1b556c0007442156">
-        <dex dex="C:\Users\Hesperide\Desktop\HtN\AndroidCalls1\app\build\intermediates\transforms\dex\debug\folders\1000\10\support-v4-18.0.0_da8f0e46fc03d622235303b68900c2ab007bf406\classes.dex" />
-    </item>
-    <item
-        jar="C:\Users\Hesperide\Desktop\HtN\AndroidCalls1\app\build\intermediates\incremental-runtime-classes\debug\instant-run.jar"
-        jumboMode="true"
-        revision="24.0.2"
-        sha1="36ad2697d80ecf7d8311dbea86e122abae439279">
-        <dex dex="C:\Users\Hesperide\Desktop\HtN\AndroidCalls1\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run_ee32c89f8d459503e6f31ef1591ef80295349283\classes.dex" />
-    </item>
-
-</items>
