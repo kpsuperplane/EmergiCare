@@ -1,11 +1,11 @@
 export default {
     getType(type){
         switch(type){
-            case 1: 
+            case 0: 
                 return "Police";
-            case 2:
+            case 1:
                 return "EMS";
-            case 3:
+            case 2:
                 return "Fire";
             default:
                 return "Unknown Issue";

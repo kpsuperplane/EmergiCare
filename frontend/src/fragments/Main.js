@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import map from '../map';
 import Helpers from '../Helpers';
 import _ from 'lodash';
+import Urgency from './Urgency';
 import police from '../img/police.png';
 import request from 'superagent'; 
 import { default as ScriptjsLoader } from "react-google-maps/lib/async/ScriptjsLoader";
@@ -66,8 +67,11 @@ class Main extends Component{
     resolve(index){
         request.post('/calls/resolve').type('form').send({ phoneNumber: index }).end();
     }
+    changeUrgency(index, e){
+        window.firedux.update('calls/'+index, { urgency: Number(e.target.value) });
+    }
     render(){
-        const {props, state, changeTab, toggle, hover, markerDragged, markerDragStopped, unassign, resolve} = this;
+        const {props, state, changeUrgency, changeTab, toggle, hover, markerDragged, markerDragStopped, unassign, resolve} = this;
         const instance = this;
         var services = [], calls = [];
         if(props.firedux.data[""]){
@@ -88,7 +92,8 @@ class Main extends Component{
                             return (
                             <a key={"PANE-"+index} href="javascript:void(0);" className={"item" + (state.hover[index] ? " hover" : "") + (state.show[index] ? " active" : "")} onClick={toggle.bind(instance, index)} onMouseEnter={hover.bind(instance, index, true)} onMouseLeave={hover.bind(instance, index, false)}>
                                 <strong>{call.phoneNumber}</strong>
-                                <div>{Helpers.getType(call.type)} | {call.address}</div>
+                                <div>{call.address}</div>
+                                <Urgency urgency={call.urgency}/>
                                 <div>Accuracy: {call.accuracy} Metres</div>
                             </a>
                         );}):_.map(services, (service, index) => {
@@ -138,20 +143,26 @@ class Main extends Component{
                                     }}
                                 />,
                                 <Marker
+                                    icon={"//maps.google.com/mapfiles/ms/icons/"+(["black","blue","orange","red"][call.urgency])+"-dot.png"}
                                     position={{lat: call.latitude, lng: call.longitude}}
                                     onClick={toggle.bind(instance, index)}
                                 >{(state.show[index]||state.hover === index)?(<InfoWindow
                                     key={index+'_info_window'}
                                     onCloseclick={toggle.bind(instance, index)}
                                 >
-                                    <div><strong>{call.phoneNumber}</strong><br/>Type: {Helpers.getType(call.type)}<br/>Accuracy: {call.accuracy} Metres<br/><a href="javascript:void(0);" onClick={resolve.bind(instance, index)}>Resolve Call</a></div>
+                                    <div>
+                                        <strong>{call.phoneNumber}</strong>
+                                        <Urgency urgency={call.urgency} onChange={changeUrgency.bind(instance, index)}/>
+                                        <div>Accuracy: {call.accuracy} Metres</div>
+                                        <a href="javascript:void(0);" onClick={resolve.bind(instance, index)}>Resolve Call</a>
+                                    </div>
                                 </InfoWindow>):null}</Marker>];
                                 if(state.highlighted === index){
                                   elems.push(<Circle
                                       key={index+'-circle-yellow'}
                                       center={{lat: call.latitude, lng: call.longitude}}
                                       radius={300}
-                                      options={{
+                                      options={{ 
                                           fillColor: `yellow`,
                                           fillOpacity: 0.80,
                                           strokeColor: `yellow`,
