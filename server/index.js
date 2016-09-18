@@ -55,34 +55,37 @@ app.post('/calls/resolve', function (req, res) {
       
       var phoneNumberRef = firebase.database().ref('/calls/' + phoneNumber);
       // deleting resolved phone number
-      firebaseHelpers.remove(phoneNumberRef).then(function () {
-        firebaseHelpers.query(ref).then(function (callerSettings) {
-          console.log(callerSettings.alerts);
-          if (callerSettings == null || callerSettings.alerts == null) {
-            twilioHelpers.sendSms(phoneNumber, TWILIO_CONFIG.number, "stop").then(function () {
-              res.status(200);
-              res.send("No alert numbers.");
-            });
-          } else {
-            // calling all alert numbers
-            var promises = [];
+      console.log(new Date().getTime());
+      firebaseHelpers.update(ref, {lastStopped: new Date().getTime()}).then(function () {
+        console.log("UPDATED");
+        firebaseHelpers.remove(phoneNumberRef).then(function () {
+          firebaseHelpers.query(ref).then(function (callerSettings) {
+            if (callerSettings == null || callerSettings.alerts == null) {
+              twilioHelpers.sendSms(phoneNumber, TWILIO_CONFIG.number, "stop").then(function () {
+                res.status(200);
+                res.send("No alert numbers.");
+              });
+            } else {
+              // calling all alert numbers
+              var promises = [];
 
-            for (var key in callerSettings.alerts) {
-              if (callerSettings.alerts.hasOwnProperty(key)) {
-                var body = "911 issue initiated by " + (callerSettings.name || phoneNumber) + " has been resolved!";
-                promises.push(twilioHelpers.sendSms(key, TWILIO_CONFIG.number, body));
+              for (var key in callerSettings.alerts) {
+                if (callerSettings.alerts.hasOwnProperty(key)) {
+                  var body = "911 issue initiated by " + (callerSettings.name || phoneNumber) + " has been resolved!";
+                  promises.push(twilioHelpers.sendSms(key, TWILIO_CONFIG.number, body));
+                }
               }
-            }
-            
-            promises.push(twilioHelpers.sendSms(phoneNumber, TWILIO_CONFIG.number, "stop"));
 
-            Promise.all(promises).then(function () {
-              res.status(200);
-              res.send("All alert numbers messaged!");
-            }).catch(function (err) {
-              console.log("A promise failed to resolve", err);
-            });
-          }
+              promises.push(twilioHelpers.sendSms(phoneNumber, TWILIO_CONFIG.number, "stop"));
+
+              Promise.all(promises).then(function () {
+                res.status(200);
+                res.send("All alert numbers messaged!");
+              }).catch(function (err) {
+                console.log("A promise failed to resolve", err);
+              });
+            }
+          });
         });
       });
     });
@@ -141,50 +144,60 @@ app.post('/sms/receive', function (req, resp) {
       accuracy: Number(rawData[2]),
       address: ""
     };
-
     var callsRef = firebase.database().ref("/calls/" + req.body.From);
-    firebaseHelpers.query(callsRef).then(function (res) {
-      if (res == null) {
-        res = {
-          latitude: null,
-          longitude: null
-        };
-      }
-
-      var dist = helpers.getDist(latitude, longitude, res.latitude, res.longitude);
-
-      if (dist < 1 && res.address != "") {
-        console.log("cached");
-        jsonData.address = res.address;
-        firebaseHelpers.update(callsRef, jsonData).then(function () {
-          resp.status(200);
-          resp.send("<Response>");
-        });
-      } else { 
-        jsonData.urgency = 0;
-        console.log("recomputing");
-        request('https://maps.googleapis.com/maps/api/geocode/json?latlng=' + latitude + ',' + longitude + '&key=' + FIREBASE_CONFIG.googleMapsKey, function (error, response, body) {
-          if (!error && response.statusCode == 200) {
-            var ret = JSON.parse(body);
-            if (ret.results == null || ret.results[0] == null || ret.results[0].formatted_address == null)
-              jsonData.address = "";
-            else
-              jsonData.address = ret.results[0].formatted_address
-          } else {
-            jsonData.address = "";
+    var settingsRef = firebase.database().ref("/settings/" + req.body.From);
+    
+    
+    firebaseHelpers.query(settingsRef).then(function (settings) {
+      if (settings == null || settings.lastStopped == null || new Date().getTime() - settings.lastStopped >= 30000) {
+        firebaseHelpers.query(callsRef).then(function (res) {
+          if (res == null) {
+            res = {
+              latitude: null,
+              longitude: null
+            };
           }
 
-          firebaseHelpers.update(callsRef, jsonData).then(function() {
-            resp.status(200);
+          var dist = helpers.getDist(latitude, longitude, res.latitude, res.longitude);
+
+          if (dist < 1 && res.address != "") {
+            console.log("cached");
+            jsonData.address = res.address;
+            firebaseHelpers.update(callsRef, jsonData).then(function () {
+              resp.status(200);
+              resp.send("<Response>");
+            });
+          } else { 
+            jsonData.urgency = 0;
+            console.log("recomputing");
+            request('https://maps.googleapis.com/maps/api/geocode/json?latlng=' + latitude + ',' + longitude + '&key=' + FIREBASE_CONFIG.googleMapsKey, function (error, response, body) {
+              if (!error && response.statusCode == 200) {
+                var ret = JSON.parse(body);
+                if (ret.results == null || ret.results[0] == null || ret.results[0].formatted_address == null)
+                  jsonData.address = "";
+                else
+                  jsonData.address = ret.results[0].formatted_address
+              } else {
+                jsonData.address = "";
+              }
+
+              firebaseHelpers.update(callsRef, jsonData).then(function() {
+                resp.status(200);
+                resp.send("<Response>");
+              });
+            })
+          }
+        }, function (error) {
+          if (error)
+            console.log(error);
+          resp.status(500);
           resp.send("<Response>");
-          });
-        })
-      }
-    }, function (error) {
-      if (error)
-        console.log(error);
-      resp.status(500);
-      resp.send("<Response>");
+        });
+      } else {
+        console.log("too soon babyyyyyyyy");
+        resp.status(200);
+        resp.send("<Response>");
+      } 
     });
   }
 });
