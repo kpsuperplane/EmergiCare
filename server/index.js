@@ -41,7 +41,14 @@ app.post('/calls/resolve', function (req, res) {
     for (var serviceName in services) {
       console.log(services[serviceName].handler, phoneNumber);
       if (services.hasOwnProperty(serviceName) && services[serviceName].handler == phoneNumber) {
-        newServices[serviceName] = {handler: null};
+        newServices[serviceName] = {
+          handler: null,
+          type: services[serviceName].type,
+          longitude: services[serviceName].longitude,
+          latitude: services[serviceName].latitude,
+          congestion_level: services[serviceName].congestion_level,
+          occupancy_status: services[serviceName].occupancy_status
+        };
         console.log(serviceName, services[serviceName].handler);
       }
     }
