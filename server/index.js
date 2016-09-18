@@ -25,11 +25,12 @@ var port = 8080;
 app.set('port', port);
 
 app.use(morgan('dev'));
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/', express.static(__dirname + '/../frontend/build/'));
 
 app.post('/calls/resolve', function (req, res) {
   var phoneNumber = req.body.phoneNumber;
+  console.log(req.body);
   var ref = firebase.database().ref('/settings/' + phoneNumber);
   
   var serviceRef = firebase.database().ref('/services');
@@ -38,12 +39,13 @@ app.post('/calls/resolve', function (req, res) {
   firebaseHelpers.query(serviceRef).then(function (services) {
     var newServices = {};
     for (var serviceName in services) {
+      console.log(services[serviceName].handler, phoneNumber);
       if (services.hasOwnProperty(serviceName) && services[serviceName].handler == phoneNumber) {
         newServices[serviceName] = {handler: null};
-        console.log(serviceName);
+        console.log(serviceName, services[serviceName].handler);
       }
     }
-    
+    console.log(newServices);
     // deleting all services with specified handler
     firebaseHelpers.update(serviceRef, newServices).then(function () {
       
