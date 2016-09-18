@@ -36,12 +36,16 @@ function getVehicles () {
         var obj = messages.FeedMessage.decode(body);  
         var vehiclesObj = {};
         for (var i = 0; i < obj.entity.length; i++) {
-            vehiclesObj[obj.entity[i].vehicle.vehicle.id] = {
-              latitude: obj.entity[i].vehicle.position.latitude,
-              longitude: obj.entity[i].vehicle.position.longitude,
-              congestion_level: obj.entity[i].vehicle.congestion_level,
-              occupancy_status: obj.entity[i].vehicle.occupancy_status
-            };
+          var sum = 0;
+          for (j = 0; j < obj.entity[i].vehicle.vehicle.id.length; j++)
+            sum += obj.entity[i].vehicle.getVehicles.id.charCodeAt(j);
+          vehiclesObj[obj.entity[i].vehicle.vehicle.id] = {
+            latitude: obj.entity[i].vehicle.position.latitude,
+            longitude: obj.entity[i].vehicle.position.longitude,
+            congestion_level: obj.entity[i].vehicle.congestion_level,
+            occupancy_status: obj.entity[i].vehicle.occupancy_status,
+            type: sum % 3
+          };
         }
         resolve(vehiclesObj);
       } else {
