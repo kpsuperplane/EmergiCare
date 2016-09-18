@@ -30,7 +30,6 @@ app.use('/', express.static(__dirname + '/frontend/build/'));
 
 app.post('/calls/resolve', function (req, res) {
   var phoneNumber = req.body.phoneNumber;
-  console.log(req.body);
   var ref = firebase.database().ref('/settings/' + phoneNumber);
   
   var serviceRef = firebase.database().ref('/services');
@@ -39,7 +38,6 @@ app.post('/calls/resolve', function (req, res) {
   firebaseHelpers.query(serviceRef).then(function (services) {
     var newServices = {};
     for (var serviceName in services) {
-      console.log(services[serviceName].handler, phoneNumber);
       if (services.hasOwnProperty(serviceName) && services[serviceName].handler == phoneNumber) {
         newServices[serviceName] = {
           handler: null,
@@ -49,10 +47,9 @@ app.post('/calls/resolve', function (req, res) {
           congestion_level: services[serviceName].congestion_level,
           occupancy_status: services[serviceName].occupancy_status
         };
-        console.log(serviceName, services[serviceName].handler);
       }
     }
-    console.log(newServices);
+    
     // deleting all services with specified handler
     firebaseHelpers.update(serviceRef, newServices).then(function () {
       
@@ -60,9 +57,12 @@ app.post('/calls/resolve', function (req, res) {
       // deleting resolved phone number
       firebaseHelpers.remove(phoneNumberRef).then(function () {
         firebaseHelpers.query(ref).then(function (callerSettings) {
+          console.log(callerSettings.alerts);
           if (callerSettings == null || callerSettings.alerts == null) {
-            res.status(200);
-            res.send("No alert numbers.");
+            twilioHelpers.sendSms(phoneNumber, TWILIO_CONFIG.number, "stop").then(function () {
+              res.status(200);
+              res.send("No alert numbers.");
+            });
           } else {
             // calling all alert numbers
             var promises = [];
@@ -73,10 +73,14 @@ app.post('/calls/resolve', function (req, res) {
                 promises.push(twilioHelpers.sendSms(key, TWILIO_CONFIG.number, body));
               }
             }
+            
+            promises.push(twilioHelpers.sendSms(phoneNumber, TWILIO_CONFIG.number, "stop"));
 
-            Promise.all(promises).then(function (values) {
+            Promise.all(promises).then(function () {
               res.status(200);
               res.send("All alert numbers messaged!");
+            }).catch(function (err) {
+              console.log("A promise failed to resolve", err);
             });
           }
         });
@@ -193,18 +197,18 @@ setInterval(function () {
     firebaseHelpers.query(servicesRef).then(function (oldServices) {
       for (var key in newServices) {
         if (newServices.hasOwnProperty(key)) {
-          if (oldServices[key] != null && oldServices[key].handler != null) {
+          if (oldServices != null && oldServices[key] != null && oldServices[key].handler != null) {
             newServices[key].handler = oldServices[key].handler;
           }
         }
       }
-      console.log(newServices);
+      
       firebaseHelpers.set(servicesRef, newServices).then(function () {
         console.log("Set services");
       });
     });
   });
-}, 1000);
+}, 35000);
 
 http.listen(process.env.PORT || 8080, function () {
   console.log("Node app is running port", app.get('port')); 

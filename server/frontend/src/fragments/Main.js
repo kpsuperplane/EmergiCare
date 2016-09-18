@@ -4,6 +4,8 @@ import Helpers from '../Helpers';
 import _ from 'lodash';
 import Urgency from './Urgency';
 import police from '../img/police.png';
+import fire from '../img/fire.png';
+import ems from '../img/ems.png';
 import request from 'superagent'; 
 import { default as ScriptjsLoader } from "react-google-maps/lib/async/ScriptjsLoader";
 import { GoogleMap, Circle, InfoWindow, Marker, Polyline } from 'react-google-maps';
@@ -181,7 +183,7 @@ class Main extends Component{
                                     draggable={true}
                                     onDrag={markerDragged.bind(instance, index)}
                                     onDragend={markerDragStopped.bind(instance, index)}
-                                    icon={{url: police, size: {width: 50, height:50}, anchor: {x: 25, y: 15}}}
+                                    icon={{url: [police,ems,fire][service.type], size: {width: 50, height:50}, anchor: {x: 25, y: 15}}}
                                 >{(state.show[index])?(<InfoWindow
                                     key={index+'_info_window'}
                                     onCloseclick={toggle.bind(instance, index)}
