@@ -28,7 +28,7 @@ app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/', express.static(__dirname + '/../frontend/build/'));
 
-app.post('/call/resolve', function (req, res) {
+app.post('/calls/resolve', function (req, res) {
   var phoneNumber = req.body.phoneNumber;
   var ref = firebase.database().ref('/settings/' + phoneNumber);
   
