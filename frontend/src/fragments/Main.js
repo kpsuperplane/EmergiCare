@@ -3,6 +3,7 @@ import map from '../map';
 import Helpers from '../Helpers';
 import _ from 'lodash';
 import police from '../img/police.png';
+import request from 'superagent'; 
 import { default as ScriptjsLoader } from "react-google-maps/lib/async/ScriptjsLoader";
 import { GoogleMap, Circle, InfoWindow, Marker, Polyline } from 'react-google-maps';
 import geodist from 'geodist';
@@ -63,11 +64,7 @@ class Main extends Component{
         window.firedux.update('services/'+index, { handler: "" });
     }
     resolve(index){
-        const services = props.firedux.data[""][""].services;
-        for(var s of services){
-          if(services[s].handler == index) window.firedux.remove("services/"+s);
-        }
-        //window.firedux.remove('calls/'+index);
+        request.post('/calls/resolve').send({ phoneNumber: index }).end();
     }
     render(){
         const {props, state, changeTab, toggle, hover, markerDragged, markerDragStopped, unassign, resolve} = this;
@@ -77,6 +74,7 @@ class Main extends Component{
             services = props.firedux.data[""][""].services;
             calls = props.firedux.data[""][""].calls;
         }
+        console.log(calls);
         return (
             <div id="app">
                 <div id="pane-info">
@@ -147,7 +145,7 @@ class Main extends Component{
                                     key={index+'_info_window'}
                                     onCloseclick={toggle.bind(instance, index)}
                                 >
-                                    <div><strong>{call.phoneNumber}</strong><br/>Type: {Helpers.getType(call.type)}<br/>Accuracy: {call.accuracy} Metres<br/><a href="javascript:void(0)'" onClick={resolve.bind(instance, index)}>Resolve Call</a></div>
+                                    <div><strong>{call.phoneNumber}</strong><br/>Type: {Helpers.getType(call.type)}<br/>Accuracy: {call.accuracy} Metres<br/><a href="javascript:void(0);" onClick={resolve.bind(instance, index)}>Resolve Call</a></div>
                                 </InfoWindow>):null}</Marker>];
                                 if(state.highlighted === index){
                                   elems.push(<Circle

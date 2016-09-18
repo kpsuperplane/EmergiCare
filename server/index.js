@@ -25,29 +25,56 @@ var port = 8080;
 app.set('port', port);
 
 app.use(morgan('dev'));
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/', express.static(__dirname + '/../frontend/build/'));
 
-app.post('/call/resolve', function (req, res) {
+app.post('/calls/resolve', function (req, res) {
   var phoneNumber = req.body.phoneNumber;
+  console.log(req.body);
   var ref = firebase.database().ref('/settings/' + phoneNumber);
-  firebaseHelpers.query(ref).then(function (callerSettings) {
-    if (callerSettings.alerts == null) {
-      res.status(200);
-      res.send();
-    } else {
-      var promises = [];
-      for (var key in callerSettings.alerts) {
-        if (callerSettings.alerts.hasOwnProperty(key)) {
-          var body = "911 issue initiated by " + (callerSettings.name || phoneNumber) + " has been resolved!";
-          promises.push(twilioHelpers.sendSms(key, TWILIO_CONFIG.number, body));
-        }
+  
+  var serviceRef = firebase.database().ref('/services');
+  
+  // finding all services
+  firebaseHelpers.query(serviceRef).then(function (services) {
+    var newServices = {};
+    for (var serviceName in services) {
+      console.log(services[serviceName].handler, phoneNumber);
+      if (services.hasOwnProperty(serviceName) && services[serviceName].handler == phoneNumber) {
+        newServices[serviceName] = {handler: null};
+        console.log(serviceName, services[serviceName].handler);
       }
-      Promise.all(promises).then(function (values) {
-        res.status(200);
-        res.send();
-      });
     }
+    console.log(newServices);
+    // deleting all services with specified handler
+    firebaseHelpers.update(serviceRef, newServices).then(function () {
+      
+      var phoneNumberRef = firebase.database().ref('/calls/' + phoneNumber);
+      // deleting resolved phone number
+      firebaseHelpers.remove(phoneNumberRef).then(function () {
+        firebaseHelpers.query(ref).then(function (callerSettings) {
+          if (callerSettings == null || callerSettings.alerts == null) {
+            res.status(200);
+            res.send("No alert numbers.");
+          } else {
+            // calling all alert numbers
+            var promises = [];
+
+            for (var key in callerSettings.alerts) {
+              if (callerSettings.alerts.hasOwnProperty(key)) {
+                var body = "911 issue initiated by " + (callerSettings.name || phoneNumber) + " has been resolved!";
+                promises.push(twilioHelpers.sendSms(key, TWILIO_CONFIG.number, body));
+              }
+            }
+
+            Promise.all(promises).then(function (values) {
+              res.status(200);
+              res.send("All alert numbers messaged!");
+            });
+          }
+        });
+      });
+    });
   });
 });
 

@@ -1,4 +1,5 @@
 function updateToFirebase (ref, json) {
+  console.log(json);
   return new Promise(function (resolve) {
     ref.update(json).then(resolve);
   });
