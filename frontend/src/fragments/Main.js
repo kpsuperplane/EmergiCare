@@ -64,7 +64,7 @@ class Main extends Component{
         window.firedux.update('services/'+index, { handler: "" });
     }
     resolve(index){
-        request.post('/calls/resolve').send({ phoneNumber: index }).end();
+        request.post('/calls/resolve').type('form').send({ phoneNumber: index }).end();
     }
     render(){
         const {props, state, changeTab, toggle, hover, markerDragged, markerDragStopped, unassign, resolve} = this;
@@ -74,7 +74,6 @@ class Main extends Component{
             services = props.firedux.data[""][""].services;
             calls = props.firedux.data[""][""].calls;
         }
-        console.log(calls);
         return (
             <div id="app">
                 <div id="pane-info">
