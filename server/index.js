@@ -26,7 +26,7 @@ app.set('port', port);
 
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use('/', express.static(__dirname + '/../frontend/build/'));
+app.use('/', express.static(__dirname + '/frontend/build/'));
 
 app.post('/calls/resolve', function (req, res) {
   var phoneNumber = req.body.phoneNumber;
@@ -112,6 +112,18 @@ app.post('/sms/receive', function (req, resp) {
         resp.send("<Response><Message>Removed: " + number + " from alert list!</Message></Response>")
       });
     }
+  } else if (rawData[0] == 'number:list') {
+      var settingsRef = firebase.database().ref("/settings/" + req.body.From + "/alerts");
+      firebaseHelpers.query(settingsRef).then(function (alertNumbersMap) {
+        var body = "<Response><Message>The alert numbers associated with this number are:\n";
+        for (var alertNumber in alertNumbersMap) {
+          if (alertNumbersMap.hasOwnProperty(alertNumber)) {
+            body += alertNumber + "\n";
+          }
+        }
+        body += "</Message></Response>";
+        resp.send(body);
+      });
   } else {
     console.log("location update");
     rawData = req.body.Body.split(";");
@@ -142,9 +154,10 @@ app.post('/sms/receive', function (req, resp) {
         jsonData.address = res.address;
         firebaseHelpers.update(callsRef, jsonData).then(function () {
           resp.status(200);
-          resp.send();
+          resp.send("<Response>");
         });
       } else { 
+        jsonData.urgency = 0;
         console.log("recomputing");
         request('https://maps.googleapis.com/maps/api/geocode/json?latlng=' + latitude + ',' + longitude + '&key=' + FIREBASE_CONFIG.googleMapsKey, function (error, response, body) {
           if (!error && response.statusCode == 200) {
@@ -159,7 +172,7 @@ app.post('/sms/receive', function (req, resp) {
 
           firebaseHelpers.update(callsRef, jsonData).then(function() {
             resp.status(200);
-            resp.send();
+          resp.send("<Response>");
           });
         })
       }
@@ -167,7 +180,7 @@ app.post('/sms/receive', function (req, resp) {
       if (error)
         console.log(error);
       resp.status(500);
-      resp.send();
+      resp.send("<Response>");
     });
   }
 });
@@ -185,13 +198,14 @@ setInterval(function () {
           }
         }
       }
+      console.log(newServices);
       firebaseHelpers.set(servicesRef, newServices).then(function () {
         console.log("Set services");
       });
     });
   });
-}, 35000);
+}, 1000);
 
-http.listen(app.get('port'), function () {
+http.listen(process.env.PORT || 8080, function () {
   console.log("Node app is running port", app.get('port')); 
 });
