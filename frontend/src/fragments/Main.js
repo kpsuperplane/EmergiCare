@@ -143,7 +143,7 @@ class Main extends Component{
                                     }}
                                 />,
                                 <Marker
-                                    icon={"//maps.google.com/mapfiles/ms/icons/"+(["black","blue","orange","red"][call.urgency])+"-dot.png"}
+                                    icon={"//maps.google.com/mapfiles/ms/icons/"+(["yellow","blue","orange","red"][call.urgency])+"-dot.png"}
                                     position={{lat: call.latitude, lng: call.longitude}}
                                     onClick={toggle.bind(instance, index)}
                                 >{(state.show[index]||state.hover === index)?(<InfoWindow
