@@ -17,7 +17,8 @@
     "reactfire": "^1.0.0",
     "redux": "^3.6.0",
     "redux-socket.io": "^1.2.0",
-    "socket.io-client": "^1.4.8"
+    "socket.io-client": "^1.4.8",
+    "superagent": "^2.2.0"
   },
   "scripts": {
     "start": "react-scripts start",
