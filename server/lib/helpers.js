@@ -38,7 +38,7 @@ function getVehicles () {
         for (var i = 0; i < obj.entity.length; i++) {
           var sum = 0;
           for (j = 0; j < obj.entity[i].vehicle.vehicle.id.length; j++)
-            sum += obj.entity[i].vehicle.getVehicles.id.charCodeAt(j);
+            sum += obj.entity[i].vehicle.vehicle.id.charCodeAt(j);
           vehiclesObj[obj.entity[i].vehicle.vehicle.id] = {
             latitude: obj.entity[i].vehicle.position.latitude,
             longitude: obj.entity[i].vehicle.position.longitude,
