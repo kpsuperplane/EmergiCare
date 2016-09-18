@@ -41,7 +41,14 @@ app.post('/calls/resolve', function (req, res) {
     for (var serviceName in services) {
       console.log(services[serviceName].handler, phoneNumber);
       if (services.hasOwnProperty(serviceName) && services[serviceName].handler == phoneNumber) {
-        newServices[serviceName] = {handler: null};
+        newServices[serviceName] = {
+          handler: null,
+          type: services[serviceName].type,
+          longitude: services[serviceName].longitude,
+          latitude: services[serviceName].latitude,
+          congestion_level: services[serviceName].congestion_level,
+          occupancy_status: services[serviceName].occupancy_status
+        };
         console.log(serviceName, services[serviceName].handler);
       }
     }
@@ -116,8 +123,7 @@ app.post('/sms/receive', function (req, resp) {
       latitude: latitude,
       longitude: longitude,
       accuracy: Number(rawData[2]),
-      address: "",
-      urgency: 0
+      address: ""
     };
 
     var callsRef = firebase.database().ref("/calls/" + req.body.From);

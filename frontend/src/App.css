@@ -62,3 +62,30 @@
   background:#EDF8FF;
   border-bottom-color: #007FD4;
 }
+.gm-style-iw{
+  line-height:1.6em;
+}
+.urgency-bar{
+  height:2px;
+  background:#AAA;
+}
+.urgency{
+  margin:10px 0;
+} 
+.urgency.low .urgency-bar{
+  background:#007FD4;
+}
+.urgency.medium .urgency-bar{
+  background:#EDB200;
+}
+.urgency.high .urgency-bar{
+  background:#ED0505;
+}
+.urgency select:disabled{
+  border-style:none;
+  background:transparent;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    color:#000;
+    appearance: none;
+}
